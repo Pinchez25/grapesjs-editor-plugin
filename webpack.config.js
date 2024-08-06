@@ -1,45 +1,64 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const pkg = require('./package.json');
-const webpack = require('webpack');
-const fs = require('fs');
-const name = pkg.name;
-const env = process.env.WEBPACK_ENV;
-let plugins = [
-  new webpack.BannerPlugin(`${name} - ${pkg.version}`),
-  new HtmlWebpackPlugin({
-    filename: 'index.html',
-    template: 'index.html',
-    inject: false
-  })
-];
-let outputFile;
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-if (env === 'build') {
-  outputFile = `${name}.min.js`;
-  plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true, compressor: { warnings: false }}));
-} else {
-  outputFile = `${name}.js`;
-}
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+  const outputFile = isProduction ? 'grapesjs-plugin-ckeditor5.min.js' : 'grapesjs-plugin-ckeditor5.js';
 
-module.exports = {
-  entry: './src/index.js',
-  output: {
-    path: __dirname + '/dist',
-    filename: outputFile,
-    library: name,
-    libraryTarget: 'umd',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      }
-    ]
-  },
-  externals: {
-    grapesjs: 'grapesjs'
-  },
-  plugins: plugins,
+  return {
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: outputFile,
+      library: 'grapesjs-plugin-ckeditor5',
+      libraryTarget: 'umd',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
+        {
+          test: /\.json$/,
+          type: 'json',
+        },
+        {
+          test: /\.svg$/,
+          use: ['@svgr/webpack'],
+        },
+        {
+          test: /\.(png|jpg|gif|ttf|woff|woff2|eot)$/,
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'assets',
+          },
+        },
+      ],
+    },
+    externals: {
+      grapesjs: 'grapesjs',
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'index.html',
+        inject: 'body',
+      }),
+    ],
+    devServer: {
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+    },
+  };
 };

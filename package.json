@@ -4,47 +4,44 @@
   "description": "Replace the built-in RTE with CKEditor 5",
   "main": "dist/grapesjs-plugin-ckeditor5.min.js",
   "scripts": {
-  "lint": "eslint src",
-  "build": "cross-env WEBPACK_ENV=build webpack",
-  "start": "webpack-dev-server --open --progress --colors"
-}
-,
+    "build": "webpack --mode production",
+    "start": "webpack serve --mode development --open",
+    "lint": "eslint src"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/artf/grapesjs-plugin-ckeditor5.git"
+    "url": "https://github.com/artf/grapesjs-plugin-ckeditor.git"
   },
   "keywords": [
     "grapesjs",
     "plugin",
-    "ckeditor5",
+    "ckeditor",
     "wysiwyg"
   ],
   "author": "Artur Arseniev",
   "license": "BSD-3-Clause",
   "babel": {
     "presets": [
-      "env"
+      "@babel/preset-env"
     ],
     "plugins": [
-      "transform-object-rest-spread"
+      "@babel/plugin-transform-runtime"
     ]
   },
-  "peerDependencies": {
-    "ckeditor": "4.x",
-    "grapesjs": "0.x"
-  },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "cross-env": "^7.0.3",
-    "eslint": "^4.1.1",
-    "html-webpack-plugin": "^2.30.1",
-    "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "@babel/core": "^7.14.6",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "eslint": "^7.31.0",
+    "html-webpack-plugin": "^5.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
   },
-  "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^42.0.2"
+  "peerDependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^29.1.0",
+    "grapesjs": "^0.17.29"
   }
 }
